@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   loadData() async {
-    await Future.delayed(Duration(seconds: 2));
+    //await Future.delayed(Duration(seconds: 2));
     final catalogJson =
         await rootBundle.loadString('assets/files/catalog.json');
     final decodedData = jsonDecode(catalogJson);
@@ -46,14 +46,36 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
-            ? ListView.builder(
-                itemCount: CatalogModel.items.length,
+            ? GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16),
                 itemBuilder: (context, index) {
-                  return ItemWidget(
-                    item: CatalogModel.items[index],
-                  );
-                },
-              )
+                  final item = CatalogModel.items[index];
+                  return Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: GridTile(
+                        child: Image.network(item.image),
+                        header: Container(
+                          child: Text(
+                            item.name,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          decoration: BoxDecoration(color: Colors.deepPurple),
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        footer: Container(
+                          child: Text(
+                            item.price.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          decoration: BoxDecoration(color: Colors.black),
+                          padding: const EdgeInsets.all(12),
+                        ),
+                      ));
+                })
             : Center(
                 child: CircularProgressIndicator(),
               ),
